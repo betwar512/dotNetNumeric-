@@ -34,10 +34,10 @@ namespace consoleNew
         Matrix<double> returnedChi2 = matrixesReturn[0];
         Matrix<double> msurused = matrixesReturn[1];
 
-            var indexI = 0;
-            var indexJ = 0;
-              var indexI1 = 0;
-            var indexJ1 = 0;
+          var indexI = 0;
+          var indexJ = 0;
+          var indexI1 = 0;
+          var indexJ1 = 0;
           var myE = returnedChi2.Enumerate();
           var blah=  myE.AsQueryable();
           var minFinal = blah.Min();
@@ -90,7 +90,7 @@ namespace consoleNew
 
          
            var t= returnedChi2.EnumerateRows();
-           using (StreamWriter myWriter = new StreamWriter(@"d:/temp/outputFinal.txt"))
+           using (StreamWriter myWriter = new StreamWriter(@"d:/temp/outputFinal2.txt"))
            {
 
                if (min_mscr_used <= mscr_lo) {
@@ -107,15 +107,17 @@ namespace consoleNew
                myWriter.WriteLine("Mscr range used :{0} < mscr < {1}",min_mscr_used,max_mscr_used);
 
 
-               //foreach (var i in t)
-               //{
-
-               //    myWriter.Write(i);
-               //}
+               
 
                myWriter.WriteLine("min in chi2 is {0} at index X {1} index Y {2}", minFinal, indexI, indexJ);
-               myWriter.WriteLine("OMbest={0}  , OLbest ={1}    ,   bestchi2perdof = {2}", omBest, olBest, bestchi2perdof);
+               myWriter.WriteLine("OMbest= {0}  , OLbest =  {1}    ,   bestchi2perdof = {2}", omBest, olBest, bestchi2perdof);
 
+
+               foreach (var i in t)
+               {
+
+                   myWriter.Write(i);
+               }
            }
           
         }

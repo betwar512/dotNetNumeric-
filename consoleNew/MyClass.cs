@@ -77,16 +77,27 @@ namespace consoleNew
                         //Mu_model normal 
                         for (int k = 0; k < mscr.Count; k++)
                         {
-                            double compare = Math.Round(mscr[k], 4);
+                            double round = Math.Round(mscr[k], 4);
 
+                            //replaced
+                            //muModel.ForEach(delegate(double mm)
+                            //{
 
-                            muModel.ForEach(delegate(double mm)
+                            //    double muModelNormal = mm + compare;
+                            //});
+
+                            for (int u= 0; u < muModel.Count; u++)
                             {
+                                muModel[u] += round;
+                            }
+                            //replaced
+                                //muerrList.ForEach(delegate(double g) { double f = Math.Pow(g, 2); });
 
-                                double muModelNormal = mm + compare;
-                            });
-
-                          muerrList.ForEach(delegate(double g) { double f = Math.Pow(g, 2); });
+                                for (int q = 0; q < muerrList.Count; q++)
+                                {
+                                    muerrList[q] = Math.Pow(muerrList[q], 2);
+                                    muerrList[q] = Math.Round(muerrList[q], 4);
+                                }
                             //result of top syntax 
                             IEnumerable<double> topElemet = muModel.Zip(muList, (x, y) => Math.Pow((x - y), 2));
                             foreach (double o in topElemet)
@@ -94,17 +105,17 @@ namespace consoleNew
                                 var t = Math.Round(o);
 
                             }
-
+                           
                             //result bottom syntax
                             result = topElemet.Zip(muerrList, (x, y) => x / y);
 
-                            double finalR = Math.Round(result.Sum(), 4);
+                            double finalR =Math.Round(result.Sum());
 
                             double testCompare = Math.Round(chi2[i, j], 4);
-                            if (!double.IsNaN(finalR) && finalR < testCompare)
+                            if (!(double.IsNaN(finalR)) && (finalR < testCompare))
                             {
                                 chi2[i, j] = finalR;
-                                mscrUsed[i, j] = compare;
+                                mscrUsed[i, j] = round;
                             }
 
                             //caculate chi2 to put it into the list 
@@ -139,14 +150,15 @@ namespace consoleNew
                     Func<double, double> myFunction = f;
                     //pointer
                     selectedZ = zz[i];
-                    X = MathNet.Numerics.Integration.SimpsonRule.IntegrateComposite(myFunction, selectedZ, 4, 20);
+                    X = MathNet.Numerics.Integration.SimpsonRule.IntegrateComposite(myFunction, 0, selectedZ, 20);
                     var roundedX = Math.Round(X, 4);
                     x.Add(roundedX);
                 };
 
                 if (ok < 0.0)
                 {
-                    R0 = 1 / Math.Sqrt(-ok);
+                    var negOk = ok * (-1);
+                    R0 = 1 / Math.Sqrt(negOk);
                     x.ForEach(delegate(double t)
                     {
                         double y = R0 * Math.Sin(t / R0);
@@ -188,7 +200,7 @@ namespace consoleNew
             {
                 var x = omI;
                 var y = olI;
-
+                z = selectedZ;
                 double t = HzInverserse(z, x, y);
                 return t;
             }
@@ -200,7 +212,7 @@ namespace consoleNew
             public double HzInverserse(double z, double om, double ol)
             {
 
-                double Hz = Math.Sqrt(Math.Pow((1 + om) * z, 2) * ((om * z) + 1) - (ol * z * (z * 2)));
+                double Hz = Math.Sqrt(Math.Pow((1+z), 2) * (om * (z+1)) - (ol * z * (z+2)));
                 double hZi = 1.0 / Hz;
                 return hZi;
 
