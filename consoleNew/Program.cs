@@ -43,7 +43,7 @@ namespace consoleNew
           var minFinal = blah.Min();
           var maxFinal = blah.Max();
           var myIndexed = returnedChi2.EnumerateIndexed();
- 
+        var huy=  myIndexed.Min();
             /*
              * find index possition for Min and Max 
              */
@@ -90,7 +90,7 @@ namespace consoleNew
 
          
            var t= returnedChi2.EnumerateRows();
-           using (StreamWriter myWriter = new StreamWriter(@"d:/temp/outputFinal2.txt"))
+           using (StreamWriter myWriter = new StreamWriter(@"d:/temp/outputFinal10.txt"))
            {
 
                if (min_mscr_used <= mscr_lo) {

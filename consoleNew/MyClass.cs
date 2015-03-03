@@ -48,12 +48,16 @@ namespace consoleNew
                     string muerr = w.MUERR;
                     string mu = w.MU;
                     double muerrValue = Convert.ToDouble(muerr);
+                    muerrValue += 0.02;
+                    muerrValue = Math.Round(muerrValue,4);
+
                     double muValue = Convert.ToDouble(mu);
-                    Math.Round(muValue, 2);
-                    Math.Round(muerrValue, 2);
+                   
+                   
+                    Math.Round(muerrValue, 4);
                     double zValue = Convert.ToDouble(z);
-                    Math.Round(zValue, 2);
-                    muerrList.Add(muerrValue + 0.02);
+                    Math.Round(zValue, 4);
+                    muerrList.Add(muerrValue);
                     myZZ.Add(zValue);
                     muList.Add(muValue);
 
@@ -63,6 +67,7 @@ namespace consoleNew
                 //matrix
                 Matrix<double> chi2 = Matrix<double>.Build.Dense(om.Count, ol.Count, Math.Exp(20));
                 var mscrUsed = Matrix<double>.Build.Dense(myZZ.Count, myZZ.Count);
+                var listFinal = new List<double>();
                 for (int i = 0; i < om.Count; i++)
                 {
                     for (int j = 0; j < ol.Count; j++)
@@ -86,11 +91,11 @@ namespace consoleNew
                             //    double muModelNormal = mm + compare;
                             //});
 
-                            for (int u= 0; u < muModel.Count; u++)
+                            for (int u = 0; u < muModel.Count; u++)
                             {
                                 muModel[u] += round;
                             }
-                            //replaced
+                                //replaced
                                 //muerrList.ForEach(delegate(double g) { double f = Math.Pow(g, 2); });
 
                                 for (int q = 0; q < muerrList.Count; q++)
@@ -98,26 +103,28 @@ namespace consoleNew
                                     muerrList[q] = Math.Pow(muerrList[q], 2);
                                     muerrList[q] = Math.Round(muerrList[q], 4);
                                 }
-                            //result of top syntax 
-                            IEnumerable<double> topElemet = muModel.Zip(muList, (x, y) => Math.Pow((x - y), 2));
-                            foreach (double o in topElemet)
-                            {
-                                var t = Math.Round(o);
+                                //result of top syntax 
+                                IEnumerable<double> topElemet = muModel.Zip(muList, (x, y) => Math.Pow((x - y), 2));
+                                foreach (double o in topElemet)
+                                {
+                                    var t = Math.Round(o);
 
-                            }
-                           
-                            //result bottom syntax
-                            result = topElemet.Zip(muerrList, (x, y) => x / y);
+                                }
 
-                            double finalR =Math.Round(result.Sum());
+                                //result bottom syntax
+                                result = topElemet.Zip(muerrList, (x, y) => x / y);
 
-                            double testCompare = Math.Round(chi2[i, j], 4);
-                            if (!(double.IsNaN(finalR)) && (finalR < testCompare))
-                            {
-                                chi2[i, j] = finalR;
-                                mscrUsed[i, j] = round;
-                            }
+                                double chi2_test = Math.Round(result.Sum());
+                                Console.WriteLine("chi2_test is = {0}", chi2_test);
+                                listFinal.Add(chi2_test);
 
+                                double testCompare = Math.Round(chi2[i, j], 4);
+                                if (!(double.IsNaN(chi2_test)) && (chi2_test < testCompare))
+                                {
+                                    chi2[i, j] = chi2_test;
+                                    mscrUsed[i, j] = round;
+                                }
+                            
                             //caculate chi2 to put it into the list 
                         }
                     }
@@ -150,7 +157,7 @@ namespace consoleNew
                     Func<double, double> myFunction = f;
                     //pointer
                     selectedZ = zz[i];
-                    X = MathNet.Numerics.Integration.SimpsonRule.IntegrateComposite(myFunction, 0, selectedZ, 20);
+                    X = MathNet.Numerics.Integration.SimpsonRule.IntegrateThreePoint(myFunction, 0, selectedZ);
                     var roundedX = Math.Round(X, 4);
                     x.Add(roundedX);
                 };
