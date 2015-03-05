@@ -90,7 +90,7 @@ namespace consoleNew
 
          
            var t= returnedChi2.EnumerateRows();
-           using (StreamWriter myWriter = new StreamWriter(@"d:/temp/outputFinal10.txt"))
+           using (StreamWriter myWriter = new StreamWriter(@"d:/temp/outputRangemscr02.txt"))
            {
 
                if (min_mscr_used <= mscr_lo) {

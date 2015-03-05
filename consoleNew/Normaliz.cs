@@ -20,8 +20,8 @@ namespace consoleNew
 
             double mscrGuess = (5 * Math.Log10(c_H0)) + 25;
                    mscrGuess= Math.Round(mscrGuess,4);
-            double mscrLo = mscrGuess - 0.5;
-            double mscrHi = mscrGuess + 0.5;
+            double mscrLo = mscrGuess - 0.2;
+            double mscrHi = mscrGuess + 0.2;
             const double mscr_step = 0.005;
 
             for (double i = mscrLo; i < mscrHi; i += mscr_step)

@@ -27,7 +27,7 @@ namespace consoleNew
 
                 //dmList init here to have keep data 
                 List<double> myList = new List<double>();
-
+                List<double> muerr_used = new List<double>();
                 xmlSerialiser serelize = new xmlSerialiser();
                 Normaliz normal = new Normaliz();
 
@@ -58,6 +58,8 @@ namespace consoleNew
                     double zValue = Convert.ToDouble(z);
                     Math.Round(zValue, 4);
                     muerrList.Add(muerrValue);
+                    muerr_used.Add(Math.Pow(muerrValue, 2));
+
                     myZZ.Add(zValue);
                     muList.Add(muValue);
 
@@ -65,9 +67,9 @@ namespace consoleNew
                 om = listOM();
                 ol = listOL();
                 //matrix
-                Matrix<double> chi2 = Matrix<double>.Build.Dense(om.Count, ol.Count, Math.Exp(20));
+                Matrix<double> chi2 = Matrix<double>.Build.Dense(om.Count, ol.Count,Math.Pow(10,20));
                 var mscrUsed = Matrix<double>.Build.Dense(myZZ.Count, myZZ.Count);
-                var listFinal = new List<double>();
+               
                 for (int i = 0; i < om.Count; i++)
                 {
                     for (int j = 0; j < ol.Count; j++)
@@ -84,40 +86,21 @@ namespace consoleNew
                         {
                             double round = Math.Round(mscr[k], 4);
 
-                            //replaced
-                            //muModel.ForEach(delegate(double mm)
-                            //{
-
-                            //    double muModelNormal = mm + compare;
-                            //});
-
-                            for (int u = 0; u < muModel.Count; u++)
+                          
+                            List<double> muerr_norm = new List<double>();
+                            for (int q = 0; q < muModel.Count; q++)
                             {
-                                muModel[u] += round;
+                                 muerr_norm.Add(muModel[q] + round);
                             }
-                                //replaced
-                                //muerrList.ForEach(delegate(double g) { double f = Math.Pow(g, 2); });
-
-                                for (int q = 0; q < muerrList.Count; q++)
-                                {
-                                    muerrList[q] = Math.Pow(muerrList[q], 2);
-                                    muerrList[q] = Math.Round(muerrList[q], 4);
-                                }
+                               
                                 //result of top syntax 
-                                IEnumerable<double> topElemet = muModel.Zip(muList, (x, y) => Math.Pow((x - y), 2));
-                                foreach (double o in topElemet)
-                                {
-                                    var t = Math.Round(o);
-
-                                }
-
+                                IEnumerable<double> topElemet = muerr_norm.Zip(muList, (x, y) => Math.Pow((x - y), 2));
+  
                                 //result bottom syntax
                                 result = topElemet.Zip(muerrList, (x, y) => x / y);
 
-                                double chi2_test = Math.Round(result.Sum());
+                                double chi2_test = Math.Round(result.Sum(),4);
                                 Console.WriteLine("chi2_test is = {0}", chi2_test);
-                                listFinal.Add(chi2_test);
-
                                 double testCompare = Math.Round(chi2[i, j], 4);
                                 if (!(double.IsNaN(chi2_test)) && (chi2_test < testCompare))
                                 {
@@ -219,7 +202,9 @@ namespace consoleNew
             public double HzInverserse(double z, double om, double ol)
             {
 
-                double Hz = Math.Sqrt(Math.Pow((1+z), 2) * (om * (z+1)) - (ol * z * (z+2)));
+                double Hz = Math.Pow((1 + z), 2) * ((om * z + 1)) - ol * z * (z + 2);
+                Hz = Math.Sqrt(Hz);
+                Hz = Math.Round(Hz);
                 double hZi = 1.0 / Hz;
                 return hZi;
 
@@ -229,9 +214,9 @@ namespace consoleNew
             {
 
                 List<double> OM = new List<double>();
-                for (double i = 0.0; i < 0.7; )
+                for (double i = 0.0; i < 0.7;  i += 0.005)
                 {
-                    i += 0.005;
+                  
                     var e = Math.Round(i, 4);
                     OM.Add(e);
                 }
@@ -241,9 +226,9 @@ namespace consoleNew
             public List<double> listOL()
             {
                 List<double> OL = new List<double>();
-                for (double i = 0.0; i < 1; )
+                for (double i = 0.0; i < 1; i += 0.005)
                 {
-                    i += 0.005;
+                   
                     var e = Math.Round(i, 4);
                     OL.Add(e);
                 }
